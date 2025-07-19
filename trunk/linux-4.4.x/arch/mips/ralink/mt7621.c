@@ -75,6 +75,10 @@
 #define MT7621_GPIO_MODE_SDHCI_SHIFT	18
 #define MT7621_GPIO_MODE_SDHCI_GPIO	1
 
+#ifdef CONFIG_MT7621_OC
+#define MT7621_CPU_FREQ	CONFIG_MT7621_CPU_FREQ
+#endif
+
 static struct rt2880_pmx_func uart1_grp[] =  { FUNC("uart1", 0, 1, 2) };
 static struct rt2880_pmx_func i2c_grp[] =  { FUNC("i2c", 0, 3, 2) };
 static struct rt2880_pmx_func uart3_grp[] = {
@@ -169,6 +173,14 @@ void __init ralink_clk_init(void)
 		break;
 	case 1:
 		mc_cpll = rt_memc_r32(DRAMC_REG_MPLL18);
+#ifdef CONFIG_MT7621_OC
+		int a;
+		char *oc_pll = MT7621_CPU_FREQ;
+		sscanf(oc_pll,"%X",&a);
+		mc_cpll &= ~(0x7ff);
+		mc_cpll |=  (a);
+		rt_memc_w32(mc_cpll,DRAMC_REG_MPLL18);
+#endif
 		mc_fb = (mc_cpll >> CPLL_FBDIV_SHIFT) & CPLL_FBDIV_MASK;
 		mc_prediv_sel = (mc_cpll >> CPLL_PREDIV_SHIFT)
 				& CPLL_PREDIV_MASK;
@@ -202,6 +214,8 @@ void __init ralink_clk_init(void)
 		pr_notice("Invalid CPU clock: %lluHz\n", cpu_clk);
 
 	cpu_rate = cpu_clk & 0xffffffff;
+
+	pr_info("CPU Clock: %ldMHz\n", cpu_rate / 1000000);
 
 	mips_hpt_frequency = cpu_rate / 2;
 }
@@ -307,7 +321,6 @@ void prom_soc_init(struct ralink_soc_info *soc_info)
 		 * config for CM regions and we have to configure them
 		 * again. This SoC cannot talk to pamlbus devices
 		 * witout proper iocu region set up.
-
 		 * FIXME: it would be better to do this with values
 		 * from DT, but we need this very early because
 		 * without this we cannot talk to pretty much anything

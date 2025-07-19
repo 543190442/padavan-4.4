@@ -19,7 +19,7 @@ start_ald() {
 
       extra_options="-I"
 
-      if [[ ! -z "$domain_id" ]]; then
+      if [ "$domain_id" = "99999" ]; then
         extra_options="$extra_options --domain-id $domain_id"
       else
         case "$(nvram get ald_no_trash)" in
@@ -36,9 +36,8 @@ start_ald() {
           *) ;;
         esac
       fi
-	  
-      /usr/bin/$NAME $extra_options --host $host --port $port --root $root  --refresh-token $refresh_token -S $read_buf_size --cache-size $cache_size --cache-ttl $cache_ttl --workdir /tmp/$NAME >/dev/null 2>&1 &
-	  ;;
+	/usr/bin/$NAME $extra_options --host $host --root $root -p $port  -r $refresh_token  -U $auth_user -W $auth_password -S $read_buf_size --cache-size $cache_size --cache-ttl $cache_ttl --workdir /tmp/$NAME >/dev/null 2>&1 &  
+        ;;
     *)
       kill_ald ;;
   esac

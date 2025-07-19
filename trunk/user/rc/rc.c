@@ -1153,18 +1153,16 @@ handle_notifications(void)
 			restart_aldriver();
 		}
 #endif
+#if defined(APP_WIREGUARD)
 		else if (strcmp(entry->d_name, RCN_RESTART_WIREGUARD) == 0)
 		{
 			restart_wireguard();
 		}
-#if defined(APP_KOOLPROXY)
-		else if (strcmp(entry->d_name, RCN_RESTART_KOOLPROXY) == 0)
+#endif
+#if defined(APP_SQM)
+		else if (strcmp(entry->d_name, RCN_RESTART_SQM) == 0)
 		{
-			restart_koolproxy();
-		}
-		else if (strcmp(entry->d_name, RCN_RESTART_KPUPDATE) == 0)
-		{
-			update_kp();
+			restart_sqm();
 		}
 #endif
 #if defined(APP_ADBYBY)
@@ -1181,6 +1179,18 @@ handle_notifications(void)
 		else if (strcmp(entry->d_name, RCN_RESTART_ADGUARDHOME) == 0)
 		{
 			restart_adguardhome();
+		}
+#endif
+#if defined(APP_SMARTDNS)
+		else if (strcmp(entry->d_name, RCN_RESTART_SMARTDNS) == 0)
+		{
+			restart_smartdns();
+		}
+#endif
+#if defined(APP_FRP)
+		else if (strcmp(entry->d_name, RCN_RESTART_FRP) == 0)
+		{
+			restart_frp();
 		}
 #endif
 #if defined(APP_DNSFORWARDER)
@@ -1268,6 +1278,10 @@ handle_notifications(void)
 		{
 			stop_logger();
 			start_logger(0);
+		}
+		else if (strcmp(entry->d_name, RCN_RESTART_WDG) == 0)
+		{
+			restart_watchdog_cpu();
 		}
 		else if (strcmp(entry->d_name, RCN_RESTART_TWEAKS) == 0)
 		{

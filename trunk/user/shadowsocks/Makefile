@@ -1,6 +1,6 @@
 THISDIR = $(shell pwd)
 
-SRC_SS_NAME=shadowsocks-libev-3.3.4
+SRC_SS_NAME=shadowsocks-libev-3.3.5
 #https://github.com/shadowsocks/shadowsocks-libev.git
 
 SRC_SSR_NAME=shadowsocksr-libev-master
@@ -58,7 +58,7 @@ configure_ssr:
 		--disable-ssp \
 		--disable-assert \
 		--enable-system-shared-lib \
-		--with-crypto-library=openssl \
+		--with-crypto-library=mbedtls \
 		--host=$(HOST_TARGET) \
 		--build=$(HOST_BUILD) ; \
 	)

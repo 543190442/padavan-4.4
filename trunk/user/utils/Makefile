@@ -7,6 +7,7 @@ utils_dir_y			+= switch
 ifdef CONFIG_RA_HW_NAT
 utils_dir_y			+= hw_nat
 endif
+utils_dir_y                     += qdma
 
 all romfs:
 	for i in $(utils_dir_y) ; do make -C $$i $@ || exit $?; done

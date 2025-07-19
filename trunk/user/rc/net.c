@@ -541,6 +541,8 @@ hwnat_configure(void)
 		return;
 	}
 
+
+
 	hwnat_status = "Enabled, IPoE/PPPoE offload [WAN]<->[LAN/WLAN]";
 	logmessage(LOGNAME, "%s: %s", "Hardware NAT/Routing", hwnat_status);
 }
@@ -577,8 +579,11 @@ reload_nat_modules(void)
 	int needed_pptp = 0;
 	int wan_nat_x = nvram_get_int("wan_nat_x");
 #if defined (USE_HW_NAT)
+	char hnat_param[80];
 	int hwnat_allow = is_hwnat_allow();
 	int hwnat_loaded = is_hwnat_loaded();
+	int hw_nat_mode = nvram_get_int("hw_nat_mode");
+	int ipv6_nat = nvram_get_int("ip6_lan_auto");
 #endif
 
 	if (!get_ap_mode())
@@ -659,13 +664,22 @@ reload_nat_modules(void)
 	}
 
 #if defined (USE_HW_NAT)
-	if (hwnat_allow && !hwnat_loaded)
-	{
-		module_smart_load("hw_nat", NULL);
+	if (hwnat_allow)
+	{	if(!hwnat_loaded)
+		{module_smart_load("hw_nat", NULL);
 #if defined (USE_MT7615_AP) || defined (USE_MT7915_AP) || defined (USE_MT76X2_AP)
-		doSystem("iwpriv %s set hw_nat_register=%d", IFNAME_2G_MAIN, 1);
-		doSystem("iwpriv %s set hw_nat_register=%d", IFNAME_5G_MAIN, 1);
+		if (hw_nat_mode == 1)
+		{doSystem("iwpriv %s set hw_nat_register=%d", IFNAME_2G_MAIN, 1);
+		doSystem("iwpriv %s set hw_nat_register=%d", IFNAME_5G_MAIN, 1);}
+		else
+		{doSystem("iwpriv %s set hw_nat_register=%d", IFNAME_2G_MAIN, 0);
+		doSystem("iwpriv %s set hw_nat_register=%d", IFNAME_5G_MAIN, 0);}
+		if(ipv6_nat==1)
+		{doSystem("echo 7 1 > /sys/kernel/debug/hnat/hnat_setting");}
+		else
+		{doSystem("echo 7 0 > /sys/kernel/debug/hnat/hnat_setting");}
 #endif
+	}
 	}
 
 	hwnat_configure();
@@ -779,8 +793,8 @@ set_tcp_tweaks(void)
 	sprintf(tmp, "/proc/sys/net/%s/%s", "ipv4", "tcp_synack_retries");
 	fput_int(tmp, 3);		// def: 5
 
-	sprintf(tmp, "/proc/sys/net/%s/%s", "ipv4", "tcp_tw_recycle");
-	fput_int(tmp, 1);
+//	sprintf(tmp, "/proc/sys/net/%s/%s", "ipv4", "tcp_tw_recycle");
+//	fput_int(tmp, 1);
 
 	sprintf(tmp, "/proc/sys/net/%s/%s", "ipv4", "tcp_tw_reuse");
 	fput_int(tmp, 1);

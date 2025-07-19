@@ -47,6 +47,7 @@
 #define RCN_RESTART_IPTV		"restart_iptv"
 #define RCN_RESTART_SYSCTL		"restart_sysctl"
 #define RCN_RESTART_TWEAKS		"restart_tweaks"
+#define RCN_RESTART_WDG			"restart_wdg"
 #define RCN_RESTART_DI			"restart_di"
 #define RCN_RESTART_SPOOLER		"restart_spooler"
 #define RCN_RESTART_MODEM		"restart_modem"
@@ -86,6 +87,7 @@
 #define RCN_RESTART_DDNSTO	"restart_ddnsto"
 #define RCN_RESTART_ALDRIVER	"restart_aldriver"
 #define RCN_RESTART_WIREGUARD	"restart_wireguard"
+#define RCN_RESTART_SQM		"restart_sqm"
 #define RCN_RESTART_REBOOT		"restart_reboot"
 
 ////////////////////////////////////////////////////////////

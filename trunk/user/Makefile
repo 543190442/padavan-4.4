@@ -146,10 +146,12 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_DDNSTO)	                       += ddnsto
 dir_$(CONFIG_FIRMWARE_INCLUDE_ALDRIVER)	                       += aliyundrive-webdav
 dir_$(CONFIG_FIRMWARE_INCLUDE_ADBYBY)		+= adbyby
 dir_$(CONFIG_FIRMWARE_INCLUDE_ALIDDNS)		+= aliddns
+dir_$(CONFIG_FIRMWARE_INCLUDE_SQM)				+= sqm-qos
 dir_$(CONFIG_FIRMWARE_INCLUDE_MENTOHUST)		+= mentohust
 dir_$(OPENSSH_ENABLED)				+= openssh
 dir_$(DROPBEAR_ENABLED)				+= dropbear
 dir_$(CONFIG_FIRMWARE_INCLUDE_HTOP)		+= htop
+dir_$(CONFIG_FIRMWARE_INCLUDE_NANO)		+= nano
 dir_$(CONFIG_FIRMWARE_INCLUDE_OPENVPN)		+= openvpn
 dir_$(CONFIG_FIRMWARE_INCLUDE_SSWAN)		+= strongswan
 dir_$(CONFIG_FIRMWARE_INCLUDE_XUPNPD)		+= xupnpd
@@ -158,9 +160,10 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_MTR)		+= mtr
 dir_$(CONFIG_FIRMWARE_INCLUDE_SOCAT)	+= socat
 dir_$(CONFIG_FIRMWARE_INCLUDE_SRELAY)	+= srelay
 dir_$(CONFIG_FIRMWARE_INCLUDE_TUNSAFE) += tunsafe
+ifeq ($(CONFIG_FIRMWARE_INCLUDE_WIREGUARD),y)
 dir_y += wireguard
 dir_y += wireguard-tools
-
+endif
 dir_$(SAMBA_ENABLED)				+= samba36
 dir_$(SAMBA_ENABLED)				+= wsdd2
 dir_$(CONFIG_FIRMWARE_INCLUDE_SHADOWSOCKS)	+= chnroute
@@ -178,6 +181,7 @@ dir_$(CONFIG_FIRMWARE_INCLUDE_IPERF3)			+= iperf3
 dir_$(CONFIG_FIRMWARE_INCLUDE_MINIEAP)			+= minieap
 dir_$(CONFIG_FIRMWARE_INCLUDE_NJIT_CLIENT)		+= njit-client
 dir_$(CONFIG_FIRMWARE_INCLUDE_MENTOHUST)		+= mentohust
+dir_$(CONFIG_FIRMWARE_INCLUDE_SMARTDNS)		+= smartdns
 dir_$(CONFIG_FIRMWARE_INCLUDE_xTUN) 			+= xTun
 ifeq ($(CONFIG_FIRMWARE_INCLUDE_WING),y)
 dir_y 			+= wing

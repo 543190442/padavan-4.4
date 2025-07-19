@@ -507,6 +507,8 @@ int start_rstats(void);
 void restart_rstats(void);
 int start_logger(int showinfo);
 void stop_logger(void);
+void start_watchdog_cpu(void);
+void restart_watchdog_cpu(void);
 int start_services_once(int is_ap_mode);
 void stop_services(int stopall);
 void stop_services_lan_wan(void);
@@ -581,9 +583,26 @@ void stop_aldriver(void);
 void start_aldriver(void);
 void restart_aldriver(void);
 #endif
+#if defined(APP_SQM)
+void stop_sqm(void);
+void start_sqm(void);
+void restart_sqm(void);
+#endif
+#if defined(APP_WIREGUARD)
 void stop_wireguard(void);
 void start_wireguard(void);
 void restart_wireguard(void);
+#endif
+#if defined(APP_SMARTDNS)
+void stop_smartdns(void);
+void start_smartdns(void);
+void restart_smartdns(void);
+#endif
+#if defined(APP_FRP)
+void stop_frp(void);
+void start_frp(void);
+void restart_frp(void);
+#endif
 /* services_ex.c */
 int fill_dnsmasq_servers(void);
 int is_dns_dhcpd_run(void);

@@ -439,6 +439,23 @@ void restart_ddnsto(void){
 }
 #endif
 
+#if defined(APP_SQM)
+void stop_sqm(void){
+	eval("/usr/lib/sqm/run.sh","stop");
+}
+
+void start_sqm(void){
+	int sqm_mode = nvram_get_int("sqm_enable");
+	if ( sqm_mode == 1)
+		eval("/usr/lib/sqm/run.sh");
+}
+
+void restart_sqm(void){
+	stop_sqm();
+	start_sqm();
+}
+#endif
+
 #if defined(APP_ALDRIVER)
 void stop_aldriver(void){
 	eval("/usr/bin/aliyundrive-webdav.sh","stop");
@@ -456,6 +473,7 @@ void restart_aldriver(void){
 }
 #endif
 
+#if defined(APP_WIREGUARD)
 void stop_wireguard(void){
 	eval("/usr/bin/wireguard.sh","stop");
 }
@@ -470,6 +488,7 @@ void restart_wireguard(void){
 	stop_wireguard();
 	start_wireguard();
 }
+#endif
 
 #if defined(APP_ADBYBY)
 void stop_adbyby(void){
@@ -492,6 +511,23 @@ void update_adb(void){
 }
 #endif
 
+#if defined(APP_SMARTDNS)
+void stop_smartdns(void){
+	eval("/usr/bin/smartdns.sh","stop");
+}
+
+void start_smartdns(void){
+	int smartdns_mode = nvram_get_int("sdns_enable");
+	if ( smartdns_mode == 1)
+		eval("/usr/bin/smartdns.sh","start");
+}
+
+void restart_smartdns(void){
+	stop_smartdns();
+	start_smartdns();
+}
+#endif
+
 #if defined(APP_ALIDDNS)
 void stop_aliddns(void){
 	eval("/usr/bin/aliddns.sh","stop");
@@ -506,6 +542,21 @@ void start_aliddns(void){
 void restart_aliddns(void){
     stop_aliddns();
 	start_aliddns();
+}
+#endif
+
+#if defined(APP_FRP)
+void stop_frp(void){
+	eval("/usr/bin/frp.sh","stop");
+}
+
+void start_frp(void){
+	eval("/usr/bin/frp.sh","start");
+}
+
+void restart_frp(void){
+	stop_frp();
+	start_frp();
 }
 #endif
 
@@ -665,6 +716,22 @@ stop_logger(void)
 	kill_services(svcs, 3, 1);
 }
 
+void
+start_watchdog_cpu(void)
+{
+	if (nvram_get_int("watchdog_cpu") != 0)
+		module_smart_load("rt_timer_wdg", NULL);
+}
+
+void
+restart_watchdog_cpu(void)
+{
+	if (nvram_get_int("watchdog_cpu") == 0)
+		module_smart_unload("rt_timer_wdg", 0);
+	else
+		module_smart_load("rt_timer_wdg", NULL);
+}
+
 int
 start_services_once(int is_ap_mode)
 {
@@ -708,6 +775,7 @@ doSystem("/usr/sbin/skipd -d /etc/storage/db");
 	start_vlmcsd();
 #endif
 	start_lltd();
+	start_watchdog_cpu();
 	start_crond();
 	start_networkmap(1);
 	start_rstats();
@@ -759,18 +827,30 @@ stop_services(int stopall)
 #if defined(APP_DDNSTO)
 	stop_ddnsto();
 #endif
+#if defined(APP_SQM)
+	stop_sqm();
+#endif
 
 #if defined(APP_ALDRIVER)
 	stop_aldriver();
 #endif
-
+#if defined(APP_WIREGUARD)
 	stop_wireguard();
-
+#endif
+#if defined(APP_SMARTDNS)
+	stop_smartdns();
+#endif
 #if defined(APP_ALIDDNS)
 	stop_aliddns();
 #endif
 #if defined(APP_TTYD)
 	stop_ttyd();
+#endif
+#if defined(APP_WIREGUARD)
+	stop_wireguard();
+#endif
+#if defined(APP_FRP)
+	stop_frp();
 #endif
 	stop_networkmap();
 	stop_lltd();

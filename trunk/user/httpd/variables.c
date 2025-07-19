@@ -60,7 +60,15 @@
 			{"url_keyword_x", "36", NULL, EVM_RESTART_FIREWALL},
 			{0,0,0,0}
 		};
-
+		
+	struct variable variables_PPPConnection_pppoemwanIPList[] = {
+			{"pppoemwan_mac_x", "14", NULL, EVM_RESTART_FIREWALL},
+			{"pppoemwan_ip_x", "17", NULL, EVM_RESTART_FIREWALL},
+			{"pppoemwan_name_x", "24", NULL, EVM_RESTART_FIREWALL},
+			{"pppoemwan_interface_x", "24", NULL, EVM_RESTART_FIREWALL},
+			{0,0,0,0}
+		};
+		
 	struct variable variables_AdbybyConf_AdIPList[] = {
 			{"adbybyip_mac_x", "14", NULL, FALSE},
 			{"adbybyip_ip_x", "17", NULL, FALSE},
@@ -120,6 +128,19 @@
 	struct variable variables_AdbybyConf_AdRULESList[] = {
 			{"adbybyrules_x", "24", NULL, FALSE},
 			{"adbybyrules_road_x", "24", NULL, FALSE},
+			{0,0,0,0}
+		};
+		
+	struct variable variables_SmartdnsConf_SdnsList[] = {
+			{"sdnss_enable_x", "24", NULL, FALSE},
+			{"sdnss_name_x", "24", NULL, FALSE},
+			{"sdnss_ip_x", "24", NULL, FALSE},
+			{"sdnss_port_x", "24", NULL, FALSE},
+			{"sdnss_type_x", "24", NULL, FALSE},
+			{"sdnss_ipc_x", "24", NULL, FALSE},
+			{"sdnss_named_x", "24", NULL, FALSE},
+			{"sdnss_non_x", "24", NULL, FALSE},
+			{"sdnss_ipset_x", "24", NULL, FALSE},
 			{0,0,0,0}
 		};
 
@@ -262,10 +283,13 @@
 			{"front_led_usb", "", NULL, EVM_RESTART_TWEAKS},
 			{"front_led_wif", "", NULL, EVM_RESTART_TWEAKS},
 			{"front_led_pwr", "", NULL, EVM_RESTART_TWEAKS},
+			{"watchdog_cpu", "", NULL, EVM_RESTART_WDG},
 			{"u2ec_enable", "", NULL, EVM_RESTART_SPOOLER},
 			{"lprd_enable", "", NULL, EVM_RESTART_SPOOLER},
 			{"rawd_enable", "", NULL, EVM_RESTART_SPOOLER},
 			{"help_enable", "", NULL, FALSE},
+			{"reboot_schedule_enable", "", NULL, FALSE},
+			{"reboot_schedule", "", NULL, FALSE},
 			{"scripts.start_script.sh", "File", NULL, EVM_BLOCK_UNSAFE},
 			{"scripts.started_script.sh", "File", NULL, EVM_BLOCK_UNSAFE},
 			{"scripts.shutdown_script.sh", "File", NULL, EVM_BLOCK_UNSAFE},
@@ -443,7 +467,13 @@
 			{0,0,0,0}
 		};
 
+	
 	struct variable variables_PPPConnection[] = {
+			{"pppoemwan_enable", "", NULL, EVM_RESTART_WAN},
+			{"pppoesync_enable", "", NULL, EVM_RESTART_WAN},
+			{"pppoe_num", "", NULL, EVM_RESTART_WAN},
+			{"pppoemwan_rules_x", "", NULL, EVM_RESTART_FIREWALL},
+			{"pppoemwan_443", "", NULL, EVM_RESTART_FIREWALL},
 			{"wan_pppoe_username", "", NULL, EVM_RESTART_WAN},
 			{"wan_pppoe_passwd", "", NULL, EVM_RESTART_WAN},
 			{"wan_pppoe_idletime", "", NULL, EVM_RESTART_WAN},
@@ -466,6 +496,7 @@
 			{"wan_ppp_lcp", "", NULL, EVM_RESTART_WAN},
 			{"wan_ppp_alcp", "", NULL, EVM_RESTART_WAN},
 			{"wan_ppp_pppd", "", NULL, EVM_RESTART_WAN},
+			{"pppoemwanIPList", "Group", ARGV((char*)variables_PPPConnection_pppoemwanIPList, "8", "55", "pppoemwan_staticnum_x"), EVM_RESTART_FIREWALL},
 			{0,0,0,0}
 		};
 
@@ -962,6 +993,25 @@
 		};
 #endif
 
+#if defined(APP_SQM)
+	struct variable variables_SqmConf[] = {
+			{"sqm_enable", "", NULL, EVM_RESTART_SQM},
+			{"sqm_active", "", NULL, EVM_RESTART_SQM},
+			{"sqm_flag", "", NULL, EVM_RESTART_SQM},
+			{"sqm_down_speed", "", NULL, EVM_RESTART_SQM},
+			{"sqm_up_speed", "", NULL, EVM_RESTART_SQM},
+			{"sqm_debug_log", "", NULL, EVM_RESTART_SQM},
+			{"sqm_log_level", "", NULL, EVM_RESTART_SQM},
+			{"sqm_qdisc", "", NULL, EVM_RESTART_SQM},
+			{"sqm_iqdisc_opts", "", NULL, EVM_RESTART_SQM},
+			{"sqm_eqdisc_opts", "", NULL, EVM_RESTART_SQM},
+			{"sqm_tcMPU", "", NULL, EVM_RESTART_SQM},
+			{"sqm_script", "", NULL, EVM_RESTART_SQM},
+			{0,0,0,0}
+	};
+#endif
+
+#if defined(APP_WIREGUARD)
 	struct variable variables_WIREGUARD[] = {
 			{"wireguard_enable", "", NULL, EVM_RESTART_WIREGUARD},
 			{"wireguard_localip", "", NULL, EVM_RESTART_WIREGUARD},
@@ -971,6 +1021,16 @@
 			{"wireguard_localip", "", NULL, EVM_RESTART_WIREGUARD},
 			{0,0,0,0}
 		};
+#endif
+
+#if defined(APP_FRP)
+	struct variable variables_FrpConf[] = {
+			{"frpc_enable", "", NULL, EVM_RESTART_FRP},
+			{"frps_enable", "", NULL, EVM_RESTART_FRP},
+			{"scripts.frp_script.sh", "File", NULL, EVM_RESTART_FRP},
+			{0,0,0,0}
+	};
+#endif
 
 #if defined(APP_SHADOWSOCKS)
 	struct variable variables_ShadowsocksConf[] = {
@@ -1102,6 +1162,53 @@
 	};
 #endif
 
+#if defined(APP_SMARTDNS)
+    struct variable variables_SmartdnsConf[] = {
+	        {"sdns_enable", "", NULL, EVM_RESTART_SMARTDNS},
+			{"snds_name", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_port", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_tcp_server", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_ipv6_server", "", NULL, EVM_RESTART_SMARTDNS},
+			{"snds_ip_change", "", NULL, EVM_RESTART_SMARTDNS},
+			{"snds_ip_change_time", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_ipv6", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_www", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_exp", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_exp_ttl", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_exp_ttl_max", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_cache_persist", "", NULL, EVM_RESTART_SMARTDNS},
+			{"snds_redirect", "", NULL, EVM_RESTART_SMARTDNS},
+			{"snds_cache", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_ttl", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_ttl_min", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_ttl_max", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_coredump", "", NULL, EVM_RESTART_SMARTDNS},	
+			{"sdnss_staticnum_x", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_speed", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_address", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_as", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_ipset", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdns_ns", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_enable", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_port", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_tcp", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_speed", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_name", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_address", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_ns", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_ipset", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_as", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_ipc", "", NULL, EVM_RESTART_SMARTDNS},
+			{"sdnse_cache", "", NULL, EVM_RESTART_SMARTDNS},
+			{"ss_white", "", NULL, EVM_RESTART_SMARTDNS},
+			{"ss_black", "", NULL, EVM_RESTART_SMARTDNS},
+			{"scripts.smartdns_address.conf", "File", NULL, EVM_RESTART_SMARTDNS},
+			{"scripts.smartdns_blacklist-ip.conf", "File", NULL, EVM_RESTART_SMARTDNS},
+			{"scripts.smartdns_whitelist-ip.conf", "File", NULL, EVM_RESTART_SMARTDNS},
+			{"scripts.smartdns_custom.conf", "File", NULL, EVM_RESTART_SMARTDNS},
+			{"SdnsList", "Group", ARGV((char*)variables_SmartdnsConf_SdnsList, "8", "55", "sdnss_staticnum_x"), EVM_RESTART_SMARTDNS},
+	};
+#endif
 	struct variable variables_WLANConfig11b[] = {
 			{"rt_ssid", "", NULL, EVM_RESTART_WIFI2},
 			{"rt_ssid2", "", NULL, EVM_RESTART_WIFI2},
@@ -1230,15 +1337,26 @@
 #if defined(APP_ALDRIVER)
 		{"ALDRIVER",		variables_ALDRIVER},
 #endif
+#if defined(APP_WIREGUARD)
 		{"WIREGUARD",		variables_WIREGUARD},
+#endif
+#if defined(APP_SQM)
+		{"SqmConf",		variables_SqmConf},
+#endif
 #if defined(APP_ADBYBY)
 		{"AdbybyConf",		variables_AdbybyConf},
 #endif
 #if defined(APP_ADGUARDHOME)
 		{"AdguardHomeConf",		variables_AdguardHomeConf},
 #endif
+#if defined(APP_SMARTDNS)
+		{"SmartdnsConf",		variables_SmartdnsConf},
+#endif
 #if defined(APP_SHADOWSOCKS)
 		{"ShadowsocksConf",		variables_ShadowsocksConf},
+#endif
+#if defined(APP_FRP)
+		{"FrpConf",		variables_FrpConf},
 #endif
 		{"DwebConf",			variables_DwebConf},
 		{"LANGUAGE",			variables_Language},
@@ -1278,6 +1396,7 @@
 		{EVM_RESTART_CROND,		EVT_RESTART_CROND,		RCN_RESTART_CROND,	0},
 		{EVM_RESTART_SYSCTL,		EVT_RESTART_SYSCTL,		RCN_RESTART_SYSCTL,	0},
 		{EVM_RESTART_TWEAKS,		EVT_RESTART_TWEAKS,		RCN_RESTART_TWEAKS,	0},
+		{EVM_RESTART_WDG,		EVT_RESTART_WDG,		RCN_RESTART_WDG,	0},
 		{EVM_RESTART_DI,		EVT_RESTART_DI,			RCN_RESTART_DI,		0},
 #if defined(USE_USB_SUPPORT)
 		{EVM_RESTART_SPOOLER,		EVT_RESTART_SPOOLER,		RCN_RESTART_SPOOLER,	0},
@@ -1336,7 +1455,15 @@
 #if defined(APP_ALDRIVER)
 		{EVM_RESTART_ALDRIVER,		EVT_RESTART_ALDRIVER,		RCN_RESTART_ALDRIVER,	0},
 #endif
+#if defined(APP_SQM)
+		{EVM_RESTART_SQM,		EVT_RESTART_SQM,		RCN_RESTART_SQM,	0},
+#endif
+#if defined(APP_WIREGUARD)
 		{EVM_RESTART_WIREGUARD,		EVT_RESTART_WIREGUARD,		RCN_RESTART_WIREGUARD,	0},
+#endif
+#if defined(APP_SMARTDNS)
+		{EVM_RESTART_SMARTDNS,		EVT_RESTART_SMARTDNS,		RCN_RESTART_SMARTDNS,	0},
+#endif
 #if defined(APP_ADBYBY)
 		{EVM_RESTART_ADBYBY,		EVT_RESTART_ADBYBY,		RCN_RESTART_ADBYBY,	0},
 #endif
@@ -1345,6 +1472,9 @@
 #endif
 #if defined(APP_SMBD) || defined(APP_NMBD)
 		{EVM_RESTART_NMBD,		EVT_RESTART_NMBD,		RCN_RESTART_NMBD,	0},
+#endif
+#if defined(APP_FRP)
+		{EVM_RESTART_FRP,		EVT_RESTART_FRP,		RCN_RESTART_FRP, 	0},
 #endif
 		{EVM_RESTART_FIREWALL,		EVT_RESTART_FIREWALL,		RCN_RESTART_FIREWALL,	0},
 		{0,0,0,0}
